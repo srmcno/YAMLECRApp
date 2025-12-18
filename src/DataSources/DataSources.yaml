@@ -1,0 +1,106 @@
+DataSources:
+  'Audit Reports':
+    DatasetName: "https://choctawnationofoklahoma.sharepoint.com/sites/environmentalcompliance"
+    EntitySetName: "e48a774b-a1a4-471b-8e66-339cda4c64f3"
+    IsSampleData: false
+    IsWritable: true
+    Name: "Audit Reports"
+    Type: "SharePointListData"
+    TableDefinition: |
+      {
+        "Title": "Single line of text",
+        "Facility": "Lookup",
+        "AuditType": "Choice",
+        "Auditor": "Person",
+        "AuditDate": "Date and Time",
+        "AuditScore": "Number",
+        "WeatherConditions": "Single line of text",
+        "Latitude": "Number",
+        "Longitude": "Number",
+        "MajorFindings": "Number",
+        "MinorFindings": "Number",
+        "Observations": "Number",
+        "Department": "Single line of text",
+        "FacilityPull": "Single line of text",
+        "AuditComplete": "Single line of text"
+      }
+      
+  'ECR Corrective Actions':
+    DatasetName: "https://choctawnationofoklahoma.sharepoint.com/sites/environmentalcompliance"
+    EntitySetName: "27994f91-6307-400c-9bd5-f90a8df83949"
+    IsSampleData: false
+    IsWritable: true
+    Name: "ECR Corrective Actions"
+    Type: "SharePointListData"
+    TableDefinition: |
+      {
+        "Title": "Single line of text",
+        "CorrectiveActionText": "Single line of text",
+        "Facility": "Lookup",
+        "ECRLink": "Lookup",
+        "Date_x0020_of_x0020_Finding": "Date and Time",
+        "CAStatus": "Choice",
+        "Severityoffiding": "Choice",
+        "FindingCategory": "Choice",
+        "SpecificIssue": "Choice",
+        "RootCause": "Choice",
+        "QuickFix": "Single line of text",
+        "Description": "Multiple lines of text",
+        "FixedOnSite": "Yes/No",
+        "AppFindingID": "Single line of text",
+        "Department": "Single line of text"
+      }
+      
+  'Chemical/Waste Inventory':
+    DatasetName: "https://choctawnationofoklahoma.sharepoint.com/sites/environmentalcompliance"
+    EntitySetName: "9a1434a5-4f63-479a-bb6d-69c68c284e94"
+    IsSampleData: false
+    IsWritable: true
+    Name: "Chemical/Waste Inventory"
+    Type: "SharePointListData"
+    TableDefinition: |
+      {
+        "Title": "Single line of text",
+        "MaterialCategory": "Single line of text",
+        "FindingCategory": "Choice",
+        "MaterialStatus": "Choice",
+        "Quantity": "Number",
+        "QuantityUnit": "Single line of text",
+        "ProperlyLabeled": "Single line of text",
+        "StorageCompliant": "Single line of text",
+        "MSDSAvailable": "Single line of text"
+      }
+      
+  'Facility Contact List':
+    DatasetName: "https://choctawnationofoklahoma.sharepoint.com/sites/environmentalcompliance"
+    EntitySetName: "7b8d48f2-5095-40c8-ad51-d8283d3bf40a"
+    IsSampleData: false
+    IsWritable: false
+    Name: "Facility Contact List"
+    Type: "SharePointListData"
+    TableDefinition: |
+      {
+        "Title": "Single line of text",
+        "FacilityType": "Single line of text",
+        "SiteAddress": "Single line of text",
+        "CAResolution": "Single line of text",
+        "County": "Choice",
+        "District": "Single line of text"
+      }
+      
+  'Chemical Products List':
+    DatasetName: "https://choctawnationofoklahoma.sharepoint.com/sites/environmentalcompliance"
+    EntitySetName: "e4e560b8-c3c7-4b99-98a5-770f03db1cd0"
+    IsSampleData: false
+    IsWritable: false
+    Name: "Chemical Products List"
+    Type: "SharePointListData"
+    TableDefinition: |
+      {
+        "Title": "Single line of text",
+        "Brand": "Single line of text",
+        "Manufacturer": "Single line of text",
+        "SDS": "Single line of text",
+        "HazardLevel": "Choice"
+      }
+

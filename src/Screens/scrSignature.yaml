@@ -1,0 +1,241 @@
+scrSignature As screen:
+    Fill: =gblTheme.Light
+
+    HeaderContainer As groupContainer.manualLayoutContainer:
+        Fill: =gblTheme.Primary
+        Height: =gblDevice.HeaderHeight
+        Width: =Parent.Width
+        X: =0
+        Y: =0
+        ZIndex: =1
+
+        lblHeader As label:
+            Align: =Align.Center
+            Color: =gblTheme.White
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            Size: =gblDevice.FontSize + 4
+            Text: ="Auditor Signature"
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            X: =gblDevice.Padding
+            Y: =(Parent.Height - Self.Height) / 2
+            ZIndex: =1
+
+    MainContainer As groupContainer.verticalAutoLayoutContainer:
+        DropShadow: =DropShadow.Light
+        Fill: =gblTheme.White
+        Height: =Parent.Height - HeaderContainer.Height - FooterContainer.Height - (gblDevice.Padding * 2)
+        LayoutDirection: =LayoutDirection.Vertical
+        LayoutGap: =15
+        Width: =Parent.Width - (gblDevice.Padding * 2)
+        X: =gblDevice.Padding
+        Y: =HeaderContainer.Height + gblDevice.Padding
+        ZIndex: =2
+
+        lblInstruction As label:
+            Color: =gblTheme.Text
+            Height: =60
+            Size: =gblDevice.FontSize
+            Text: ="Please sign below to certify that this audit was conducted according to ECR standards."
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            X: =gblDevice.Padding
+            Y: =gblDevice.Padding
+            ZIndex: =1
+
+        penSignature As penInput:
+            BorderColor: =gblTheme.Border
+            BorderThickness: =2
+            Height: =200
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            X: =gblDevice.Padding
+            Y: =lblInstruction.Y + lblInstruction.Height + 10
+            ZIndex: =2
+
+        btnClearSignature As button:
+            Color: =gblTheme.Text
+            Fill: =gblTheme.Border
+            Height: =40
+            OnSelect: =Reset(penSignature)
+            Text: ="Clear Signature"
+            Width: =150
+            X: =gblDevice.Padding
+            Y: =penSignature.Y + penSignature.Height + 10
+            ZIndex: =3
+
+        lblSubmitStatus As label:
+            Color: =If(varSubmitSuccess, gblTheme.Success, gblTheme.Danger)
+            Height: =60
+            Size: =gblDevice.FontSize
+            Text: =varSubmitStatus
+            Visible: =!IsBlank(varSubmitStatus)
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            X: =gblDevice.Padding
+            Y: =btnClearSignature.Y + btnClearSignature.Height + 20
+            ZIndex: =4
+
+    FooterContainer As groupContainer.manualLayoutContainer:
+        Fill: =gblTheme.Light
+        Height: =gblDevice.FooterHeight
+        Width: =Parent.Width
+        X: =0
+        Y: =Parent.Height - Self.Height
+        ZIndex: =3
+
+        btnCancel As button:
+            Color: =gblTheme.Text
+            Fill: =gblTheme.Border
+            Height: =50
+            OnSelect: =Back()
+            Text: ="Cancel"
+            Width: =100
+            X: =gblDevice.Padding
+            Y: =(Parent.Height - Self.Height) / 2
+            ZIndex: =1
+
+        btnFinalSubmit As button:
+            Color: =gblTheme.White
+            Disabled: =IsBlank(penSignature.Image)
+            Fill: =gblTheme.Success
+            FontWeight: =FontWeight.Semibold
+            Height: =50
+            OnSelect: |-
+                =// Validate signature
+                If(IsBlank(penSignature.Image),
+                    Notify("Please provide your signature", NotificationType.Warning),
+                    
+                    // Start submission process
+                    Set(varSubmitStatus, "Submitting audit...");
+                    Set(varSubmitSuccess, false);
+                    
+                    // MASTER SUBMISSION FORMULA
+                    // Step 1: Patch Parent Record to Audit Reports
+                    Set(varAuditRecord,
+                        Patch('Audit Reports', Defaults('Audit Reports'),
+                            {
+                                Title: varSelectedFacility.Title & " - " & varSelectedAuditType & " - " & Text(varAuditDate, "mm/dd/yyyy"),
+                                Facility: {
+                                    '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedReference",
+                                    Id: varSelectedFacility.ID,
+                                    Value: varSelectedFacility.Title
+                                },
+                                AuditType: {
+                                    '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedChoice",
+                                    Value: varSelectedAuditType
+                                },
+                                Auditor: {
+                                    '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+                                    Claims: "i:0#.f|membership|" & varAuditorEmail,
+                                    DisplayName: varAuditorName,
+                                    Email: varAuditorEmail
+                                },
+                                AuditDate: varAuditDate,
+                                AuditScore: varAuditScore,
+                                WeatherConditions: varWeather,
+                                Latitude: varLatitude,
+                                Longitude: varLongitude,
+                                MajorFindings: varMajorCount,
+                                MinorFindings: varMinorCount,
+                                Observations: varObservationCount,
+                                Department: "Environmental Compliance",
+                                FacilityPull: varSelectedFacility.Title,
+                                AuditComplete: "Yes"
+                            }
+                        )
+                    );
+                    
+                    // Step 2: Refresh to ensure parent record is available
+                    Refresh('Audit Reports');
+                    
+                    // Step 3: Patch Child Records (Findings) to ECR Corrective Actions
+                    ForAll(colFindings,
+                        Patch('ECR Corrective Actions', Defaults('ECR Corrective Actions'),
+                            {
+                                Title: CorrectiveActionText,
+                                CorrectiveActionText: CorrectiveActionText,
+                                Facility: {
+                                    '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedReference",
+                                    Id: varSelectedFacility.ID,
+                                    Value: varSelectedFacility.Title
+                                },
+                                ECRLink: {
+                                    '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedReference",
+                                    Id: varAuditRecord.ID,
+                                    Value: varAuditRecord.Title
+                                },
+                                Date_x0020_of_x0020_Finding: varAuditDate,
+                                CAStatus: {
+                                    '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedChoice",
+                                    Value: "Unresolved"
+                                },
+                                Severityoffiding: {
+                                    '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedChoice",
+                                    Value: Severityoffiding
+                                },
+                                FindingCategory: {
+                                    '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedChoice",
+                                    Value: FindingCategory
+                                },
+                                Description: If(!IsBlank(Description), Description, CorrectiveActionText),
+                                FixedOnSite: If(IsBlank(FixedOnSite), false, FixedOnSite),
+                                AppFindingID: AppFindingID,
+                                Department: "Environmental Compliance"
+                            }
+                        )
+                    );
+                    
+                    // Step 4: Refresh findings list
+                    Refresh('ECR Corrective Actions');
+                    
+                    // Step 5: Attach Finding Photos
+                    ForAll(colFindingPhotos,
+                        With({
+                            matchedFinding: LookUp('ECR Corrective Actions', AppFindingID = FindingID)
+                        },
+                            If(!IsBlank(matchedFinding),
+                                Patch('ECR Corrective Actions', matchedFinding,
+                                    {
+                                        Attachments: Table({Value: Photo})
+                                    }
+                                )
+                            )
+                        )
+                    );
+                    
+                    // Step 6: Attach Parent Attachments
+                    Patch('Audit Reports', varAuditRecord,
+                        {
+                            Attachments: Concatenate(
+                                Table({Value: penSignature.Image}),
+                                ForAll(colGeneralPhotos, {Value: Photo})
+                            )
+                        }
+                    );
+                    
+                    // Step 7: Generate PDF Report
+                    Set(varPDFBlob, PDF(scrPDFReport, {Orientation: "Portrait"}));
+                    
+                    // Step 8: Send to Power Automate Flow
+                    'PowerAppV2->Createfile'.Run(
+                        varPDFBlob,
+                        varSelectedFacility.Title & "_" & varSelectedAuditType & "_" & Text(varAuditDate, "yyyymmdd") & ".pdf",
+                        varAuditScore,
+                        varAuditorName,
+                        varWeather,
+                        varLatitude,
+                        varLongitude,
+                        varSelectedFacility.ID
+                    );
+                    
+                    // Success notification
+                    Set(varSubmitStatus, "Audit submitted successfully!");
+                    Set(varSubmitSuccess, true);
+                    Notify("Audit submitted successfully! Score: " & varAuditScore, NotificationType.Success);
+                    
+                    // Navigate to completion screen
+                    Navigate(scrComplete, ScreenTransition.None)
+                )
+            Text: ="Submit Audit"
+            Width: =180
+            X: =Parent.Width - Self.Width - gblDevice.Padding
+            Y: =(Parent.Height - Self.Height) / 2
+            ZIndex: =2
