@@ -1,0 +1,22 @@
+Properties:
+  Author: ""
+  Name: ECR Data Collector
+  AppCreationSource: AppFromScratch
+  AppDescription: "Environmental Compliance Review Data Collector - A mobile-responsive tool for environmental auditors to conduct site visits"
+  AppPreviewFlagsKey: {}
+  BackEnabled: false
+  ConfirmExit: false
+  ConfirmExitMessage: ""
+  DefaultConnectedDataSourceMaxGetRowsCount: 500
+  EnableAppEmbedding: false
+  EnableDelayActions: false
+  EnableDelayOutput: true
+  EnableHeaderBarHiding: false
+  EnablePowerAutomate: true
+  LoadingSpinner: =LoadingSpinner.Controls
+  LoadingSpinnerColor: =RGBA(135, 100, 184, 1)
+  ManualOfflineProfileId: ""
+  OriginatingVersion: "1.0.0"
+  ShowViewInMR: true
+  Version: "1.0"
+

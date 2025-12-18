@@ -1,0 +1,37 @@
+Connections:
+  AuditReports:
+    ConnectorId: "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+    DisplayName: "Audit Reports"
+    Id: "shared_sharepointonline"
+    IsPremium: false
+    
+  ECRCorrectiveActions:
+    ConnectorId: "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+    DisplayName: "ECR Corrective Actions"
+    Id: "shared_sharepointonline"
+    IsPremium: false
+    
+  ChemicalWasteInventory:
+    ConnectorId: "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+    DisplayName: "Chemical/Waste Inventory"
+    Id: "shared_sharepointonline"
+    IsPremium: false
+    
+  FacilityContactList:
+    ConnectorId: "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+    DisplayName: "Facility Contact List"
+    Id: "shared_sharepointonline"
+    IsPremium: false
+    
+  ChemicalProductsList:
+    ConnectorId: "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+    DisplayName: "Chemical Products List"
+    Id: "shared_sharepointonline"
+    IsPremium: false
+    
+  PowerAutomateFlow:
+    ConnectorId: "/providers/Microsoft.PowerApps/apis/shared_logicflows"
+    DisplayName: "Power Automate"
+    Id: "shared_logicflows"
+    IsPremium: false
+

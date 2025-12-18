@@ -1,0 +1,92 @@
+{
+  "name": "ECR Data Collector",
+  "version": "1.0.0",
+  "description": "Environmental Compliance Review Data Collector - Mobile-responsive audit tool for environmental compliance inspections",
+  "author": "Choctaw Nation of Oklahoma - Environmental Compliance",
+  "powerApps": {
+    "type": "Canvas",
+    "format": "YAML",
+    "minimumVersion": "3.24042.0"
+  },
+  "connections": [
+    {
+      "name": "SharePoint",
+      "type": "shared_sharepointonline",
+      "lists": [
+        {
+          "name": "Audit Reports",
+          "id": "e48a774b-a1a4-471b-8e66-339cda4c64f3",
+          "type": "DocumentLibrary"
+        },
+        {
+          "name": "ECR Corrective Actions",
+          "id": "27994f91-6307-400c-9bd5-f90a8df83949",
+          "type": "List"
+        },
+        {
+          "name": "Chemical/Waste Inventory",
+          "id": "9a1434a5-4f63-479a-bb6d-69c68c284e94",
+          "type": "List"
+        },
+        {
+          "name": "Facility Contact List",
+          "id": "7b8d48f2-5095-40c8-ad51-d8283d3bf40a",
+          "type": "List"
+        },
+        {
+          "name": "Chemical Products List",
+          "id": "e4e560b8-c3c7-4b99-98a5-770f03db1cd0",
+          "type": "List"
+        }
+      ],
+      "siteUrl": "https://choctawnationofoklahoma.sharepoint.com/sites/environmentalcompliance"
+    },
+    {
+      "name": "PowerAutomate",
+      "type": "shared_logicflows",
+      "flows": [
+        {
+          "name": "PowerAppV2->Createfile",
+          "description": "Creates PDF file in SharePoint from audit report"
+        }
+      ]
+    }
+  ],
+  "screens": [
+    "scrAppStart",
+    "scrSetup",
+    "scrPermits",
+    "scrSystems",
+    "scrInventories",
+    "scrSiteConditions",
+    "scrFindingsReview",
+    "scrSignature",
+    "scrComplete",
+    "scrFindingDetail",
+    "scrInventoryDetail",
+    "scrPhotoCapture",
+    "scrPDFReport"
+  ],
+  "features": [
+    "GPS Location Capture",
+    "Weather Documentation",
+    "5-Step Audit Process",
+    "Photo Documentation",
+    "Automated Scoring",
+    "PDF Report Generation",
+    "Digital Signatures",
+    "Parent-Child Data Relationships",
+    "Mobile Responsive Design"
+  ],
+  "keywords": [
+    "environmental",
+    "compliance",
+    "audit",
+    "inspection",
+    "ECR",
+    "SPCC",
+    "SWPPP",
+    "SharePoint",
+    "Power Apps"
+  ]
+}

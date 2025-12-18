@@ -1,0 +1,159 @@
+Screen As screen.scrSystems:
+    Fill: =gblTheme.Light
+    
+    HeaderContainer As groupContainer:
+        Fill: =gblTheme.Primary
+        Height: =gblDevice.HeaderHeight
+        Width: =Parent.Width
+        X: =0
+        Y: =0
+        
+        lblHeader As label:
+            Text: ="Step 3: Systems Inspection"
+            Color: =gblTheme.White
+            Size: =gblDevice.FontSize + 4
+            FontWeight: =FontWeight.Bold
+            X: =gblDevice.Padding
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            Height: =30
+    
+    MainContainer As groupContainer:
+        Fill: =gblTheme.White
+        Height: =Parent.Height - HeaderContainer.Height - FooterContainer.Height - (gblDevice.Padding * 2)
+        Width: =Parent.Width - (gblDevice.Padding * 2)
+        X: =gblDevice.Padding
+        Y: =HeaderContainer.Height + gblDevice.Padding
+        
+        lblInstruction As label:
+            Text: ="Inspect and document system conditions: Potable Water, Backflow Prevention, Septic Systems, and Odors."
+            Color: =gblTheme.Text
+            Size: =gblDevice.FontSize
+            X: =gblDevice.Padding
+            Y: =gblDevice.Padding
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            Height: =60
+            
+        lblPotableWater As label:
+            Text: ="Potable Water System:"
+            Color: =gblTheme.Text
+            Size: =gblDevice.FontSize
+            FontWeight: =FontWeight.Semibold
+            X: =gblDevice.Padding
+            Y: =lblInstruction.Y + lblInstruction.Height + 15
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            
+        chkPotableCompliant As checkbox:
+            Text: ="System is compliant"
+            Default: =true
+            X: =gblDevice.Padding
+            Y: =lblPotableWater.Y + lblPotableWater.Height + 5
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            
+        btnAddPotableFinding As button:
+            Text: ="+ Add Water Finding"
+            OnSelect: |+
+                Set(varEditMode, false);
+                Set(varCurrentFinding, {FindingCategory: "Water System"});
+                Navigate(scrFindingDetail, ScreenTransition.Cover);
+            Fill: =gblTheme.Warning
+            Color: =gblTheme.White
+            Visible: =!chkPotableCompliant.Value
+            X: =gblDevice.Padding
+            Y: =chkPotableCompliant.Y + chkPotableCompliant.Height + 5
+            Width: =180
+            Height: =35
+            
+        lblBackflow As label:
+            Text: ="Backflow Prevention:"
+            Color: =gblTheme.Text
+            Size: =gblDevice.FontSize
+            FontWeight: =FontWeight.Semibold
+            X: =gblDevice.Padding
+            Y: =If(chkPotableCompliant.Value, chkPotableCompliant.Y + chkPotableCompliant.Height + 15, btnAddPotableFinding.Y + btnAddPotableFinding.Height + 15)
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            
+        chkBackflowCompliant As checkbox:
+            Text: ="Backflow devices tested and compliant"
+            Default: =true
+            X: =gblDevice.Padding
+            Y: =lblBackflow.Y + lblBackflow.Height + 5
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            
+        lblSeptic As label:
+            Text: ="Septic System:"
+            Color: =gblTheme.Text
+            Size: =gblDevice.FontSize
+            FontWeight: =FontWeight.Semibold
+            X: =gblDevice.Padding
+            Y: =chkBackflowCompliant.Y + chkBackflowCompliant.Height + 15
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            
+        chkSepticCompliant As checkbox:
+            Text: ="Septic system maintained and compliant"
+            Default: =true
+            X: =gblDevice.Padding
+            Y: =lblSeptic.Y + lblSeptic.Height + 5
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            
+        lblOdors As label:
+            Text: ="Odors Detected:"
+            Color: =gblTheme.Text
+            Size: =gblDevice.FontSize
+            FontWeight: =FontWeight.Semibold
+            X: =gblDevice.Padding
+            Y: =chkSepticCompliant.Y + chkSepticCompliant.Height + 15
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            
+        chkNoOdors As checkbox:
+            Text: ="No unusual odors detected"
+            Default: =true
+            X: =gblDevice.Padding
+            Y: =lblOdors.Y + lblOdors.Height + 5
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            
+        btnAddSystemFinding As button:
+            Text: ="+ Add Other System Finding"
+            OnSelect: |+
+                Set(varEditMode, false);
+                Set(varCurrentFinding, {FindingCategory: "Systems"});
+                Navigate(scrFindingDetail, ScreenTransition.Cover);
+            Fill: =gblTheme.Success
+            Color: =gblTheme.White
+            X: =gblDevice.Padding
+            Y: =chkNoOdors.Y + chkNoOdors.Height + 20
+            Width: =220
+            Height: =40
+    
+    FooterContainer As groupContainer:
+        Fill: =gblTheme.Light
+        Height: =gblDevice.FooterHeight
+        Width: =Parent.Width
+        X: =0
+        Y: =Parent.Height - Self.Height
+        
+        btnBack As button:
+            Text: ="Back"
+            OnSelect: |+
+                Set(varCurrentStep, 2);
+                Navigate(scrPermits, ScreenTransition.ScreenTransition.Fade);
+            Fill: =gblTheme.Border
+            Color: =gblTheme.Text
+            X: =gblDevice.Padding
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =100
+            Height: =50
+            
+        btnNext As button:
+            Text: ="Next: Inventories"
+            OnSelect: |+
+                Set(varCurrentStep, 4);
+                Navigate(scrInventories, ScreenTransition.ScreenTransition.Fade);
+            Fill: =gblTheme.Primary
+            Color: =gblTheme.White
+            X: =Parent.Width - Self.Width - gblDevice.Padding
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =170
+            Height: =50
+            FontWeight: =FontWeight.Semibold
+

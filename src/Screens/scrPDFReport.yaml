@@ -1,0 +1,177 @@
+Screen As screen.scrPDFReport:
+    Fill: =RGBA(255, 255, 255, 1)
+    Visible: =false
+    
+    // This is a hidden screen used for PDF generation
+    // It contains the formatted audit report layout
+    
+    ContainerReport As groupContainer:
+        Fill: =RGBA(255, 255, 255, 1)
+        Width: =Parent.Width
+        Height: =Parent.Height
+        X: =0
+        Y: =0
+        
+        // Header Section
+        rectHeader As rectangle:
+            Fill: =RGBA(0, 120, 212, 1)
+            Height: =100
+            Width: =Parent.Width
+            X: =0
+            Y: =0
+            
+        lblReportTitle As label:
+            Text: ="Environmental Compliance Review"
+            Color: =RGBA(255, 255, 255, 1)
+            Size: =24
+            FontWeight: =FontWeight.Bold
+            X: =20
+            Y: =15
+            Width: =Parent.Width - 40
+            
+        lblReportSubtitle As label:
+            Text: ="Audit Report - " & varSelectedFacility.Title
+            Color: =RGBA(255, 255, 255, 1)
+            Size: =16
+            X: =20
+            Y: =50
+            Width: =Parent.Width - 40
+            
+        lblReportDate As label:
+            Text: ="Date: " & Text(varAuditDate, "mm/dd/yyyy hh:mm AM/PM")
+            Color: =RGBA(255, 255, 255, 1)
+            Size: =12
+            X: =20
+            Y: =75
+            Width: =Parent.Width - 40
+            
+        // Audit Information Section
+        rectAuditInfo As rectangle:
+            Fill: =RGBA(243, 242, 241, 1)
+            Height: =200
+            Width: =Parent.Width - 40
+            X: =20
+            Y: =120
+            
+        lblAuditInfoTitle As label:
+            Text: ="Audit Information"
+            Color: =RGBA(50, 49, 48, 1)
+            Size: =16
+            FontWeight: =FontWeight.Bold
+            X: =40
+            Y: =135
+            Width: =Parent.Width - 80
+            
+        lblFacilityInfo As label:
+            Text: ="Facility: " & varSelectedFacility.Title & Char(10) &
+                   "Audit Type: " & varSelectedAuditType & Char(10) &
+                   "Auditor: " & varAuditorName & Char(10) &
+                   "Weather: " & varWeather & Char(10) &
+                   "GPS: " & Text(varLatitude, "0.000000") & ", " & Text(varLongitude, "0.000000")
+            Color: =RGBA(50, 49, 48, 1)
+            Size: =12
+            X: =40
+            Y: =165
+            Width: =Parent.Width - 80
+            Height: =140
+            
+        // Score Section
+        rectScoreSection As rectangle:
+            Fill: =If(varAuditScore >= 90, RGBA(16, 124, 16, 0.2), If(varAuditScore >= 70, RGBA(255, 185, 0, 0.2), RGBA(232, 17, 35, 0.2)))
+            BorderColor: =If(varAuditScore >= 90, RGBA(16, 124, 16, 1), If(varAuditScore >= 70, RGBA(255, 185, 0, 1), RGBA(232, 17, 35, 1)))
+            BorderThickness: =3
+            Height: =100
+            Width: =Parent.Width - 40
+            X: =20
+            Y: =340
+            
+        lblScoreTitle As label:
+            Text: ="COMPLIANCE SCORE"
+            Color: =RGBA(50, 49, 48, 1)
+            Size: =14
+            FontWeight: =FontWeight.Semibold
+            X: =40
+            Y: =355
+            Width: =Parent.Width - 80
+            
+        lblScoreValue As label:
+            Text: =Text(varAuditScore) & " / 100"
+            Color: =If(varAuditScore >= 90, RGBA(16, 124, 16, 1), If(varAuditScore >= 70, RGBA(255, 185, 0, 1), RGBA(232, 17, 35, 1)))
+            Size: =32
+            FontWeight: =FontWeight.Bold
+            X: =40
+            Y: =380
+            Width: =Parent.Width - 80
+            
+        lblScoreBreakdown As label:
+            Text: ="Major Findings: " & varMajorCount & " | Minor Findings: " & varMinorCount & " | Observations: " & varObservationCount
+            Color: =RGBA(50, 49, 48, 1)
+            Size: =11
+            X: =40
+            Y: =420
+            Width: =Parent.Width - 80
+            
+        // Findings Section
+        lblFindingsTitle As label:
+            Text: ="Findings Summary (" & CountRows(colFindings) & " Total)"
+            Color: =RGBA(50, 49, 48, 1)
+            Size: =16
+            FontWeight: =FontWeight.Bold
+            X: =20
+            Y: =460
+            Width: =Parent.Width - 40
+            
+        galPDFFindings As gallery:
+            Items: =colFindings
+            TemplateSize: =80
+            X: =20
+            Y: =490
+            Width: =Parent.Width - 40
+            Height: =Min(400, CountRows(colFindings) * 80)
+            
+            Template:
+                lblFindingNumber As label:
+                    Text: =ThisItem.Value & "."
+                    Color: =RGBA(50, 49, 48, 1)
+                    Size: =11
+                    FontWeight: =FontWeight.Bold
+                    X: =5
+                    Y: =5
+                    Width: =30
+                    
+                lblFindingSeverityPDF As label:
+                    Text: ="[" & ThisItem.Severityoffiding & "]"
+                    Color: =If(ThisItem.Severityoffiding = "Major", RGBA(232, 17, 35, 1), If(ThisItem.Severityoffiding = "Minor", RGBA(255, 185, 0, 1), RGBA(0, 120, 212, 1)))
+                    Size: =10
+                    FontWeight: =FontWeight.Bold
+                    X: =35
+                    Y: =5
+                    Width: =80
+                    
+                lblFindingCategoryPDF As label:
+                    Text: =ThisItem.FindingCategory
+                    Color: =RGBA(100, 100, 100, 1)
+                    Size: =9
+                    X: =120
+                    Y: =5
+                    Width: =150
+                    
+                lblFindingTextPDF As label:
+                    Text: =ThisItem.CorrectiveActionText
+                    Color: =RGBA(50, 49, 48, 1)
+                    Size: =11
+                    X: =35
+                    Y: =25
+                    Width: =Parent.TemplateWidth - 40
+                    Height: =50
+                    
+        // Footer Section
+        lblReportFooter As label:
+            Text: ="Report Generated: " & Text(Now(), "mm/dd/yyyy hh:mm AM/PM") & " | Choctaw Nation Environmental Compliance"
+            Color: =RGBA(150, 150, 150, 1)
+            Size: =9
+            X: =20
+            Y: =Parent.Height - 40
+            Width: =Parent.Width - 40
+            Height: =30
+

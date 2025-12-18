@@ -1,0 +1,190 @@
+Screen As screen.scrFindingDetail:
+    Fill: =gblTheme.Light
+    
+    HeaderContainer As groupContainer:
+        Fill: =gblTheme.Primary
+        Height: =gblDevice.HeaderHeight
+        Width: =Parent.Width
+        X: =0
+        Y: =0
+        
+        lblHeader As label:
+            Text: =If(varEditMode, "Edit Finding", "Add Finding")
+            Color: =gblTheme.White
+            Size: =gblDevice.FontSize + 4
+            FontWeight: =FontWeight.Bold
+            X: =gblDevice.Padding
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            Height: =30
+    
+    MainContainer As scrollableScreen:
+        Fill: =gblTheme.White
+        Height: =Parent.Height - HeaderContainer.Height - FooterContainer.Height - (gblDevice.Padding * 2)
+        Width: =Parent.Width - (gblDevice.Padding * 2)
+        X: =gblDevice.Padding
+        Y: =HeaderContainer.Height + gblDevice.Padding
+        
+        lblCategory As label:
+            Text: ="Finding Category:"
+            Color: =gblTheme.Text
+            Size: =gblDevice.FontSize
+            X: =gblDevice.Padding
+            Y: =gblDevice.Padding
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            
+        drpCategory As dropdown:
+            Items: =["Permits", "Water System", "Air Quality", "Waste Management", "Chemical Storage", "SPCC", "SWPPP", "Safety", "Environmental", "Site Conditions", "Systems"]
+            DefaultSelectedItems: =If(varEditMode, varCurrentFinding.FindingCategory, If(!IsBlank(varCurrentFinding.FindingCategory), varCurrentFinding.FindingCategory, Blank()))
+            X: =gblDevice.Padding
+            Y: =lblCategory.Y + lblCategory.Height + 5
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            Height: =40
+            
+        lblSeverity As label:
+            Text: ="Severity:"
+            Color: =gblTheme.Text
+            Size: =gblDevice.FontSize
+            X: =gblDevice.Padding
+            Y: =drpCategory.Y + drpCategory.Height + 15
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            
+        drpSeverity As dropdown:
+            Items: =["Major", "Minor", "Observation"]
+            DefaultSelectedItems: =If(varEditMode, varCurrentFinding.Severityoffiding, "Minor")
+            X: =gblDevice.Padding
+            Y: =lblSeverity.Y + lblSeverity.Height + 5
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            Height: =40
+            
+        lblDescription As label:
+            Text: ="Description:"
+            Color: =gblTheme.Text
+            Size: =gblDevice.FontSize
+            X: =gblDevice.Padding
+            Y: =drpSeverity.Y + drpSeverity.Height + 15
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            
+        txtDescription As text:
+            Mode: =TextMode.MultiLine
+            Default: =If(varEditMode, varCurrentFinding.CorrectiveActionText, "")
+            HintText: ="Describe the finding in detail..."
+            X: =gblDevice.Padding
+            Y: =lblDescription.Y + lblDescription.Height + 5
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            Height: =120
+            
+        lblNotes As label:
+            Text: ="Additional Notes:"
+            Color: =gblTheme.Text
+            Size: =gblDevice.FontSize
+            X: =gblDevice.Padding
+            Y: =txtDescription.Y + txtDescription.Height + 15
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            
+        txtNotes As text:
+            Mode: =TextMode.MultiLine
+            Default: =If(varEditMode, varCurrentFinding.Description, "")
+            HintText: ="Additional context or notes..."
+            X: =gblDevice.Padding
+            Y: =lblNotes.Y + lblNotes.Height + 5
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            Height: =100
+            
+        chkFixedOnSite As checkbox:
+            Text: ="Fixed on site"
+            Default: =If(varEditMode, varCurrentFinding.FixedOnSite, false)
+            X: =gblDevice.Padding
+            Y: =txtNotes.Y + txtNotes.Height + 15
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            
+        btnAddPhoto As button:
+            Text: ="📷 Add Photo"
+            OnSelect: |+
+                Set(varPhotoContext, "Finding");
+                Set(varPhotoFindingID, If(varEditMode, varCurrentFinding.AppFindingID, GUID()));
+                Navigate(scrPhotoCapture, ScreenTransition.Cover);
+            Fill: =gblTheme.Secondary
+            Color: =gblTheme.White
+            X: =gblDevice.Padding
+            Y: =chkFixedOnSite.Y + chkFixedOnSite.Height + 15
+            Width: =150
+            Height: =40
+            
+        galFindingPhotos As gallery:
+            Items: =Filter(colFindingPhotos, FindingID = varPhotoFindingID)
+            Layout: =Layout.Horizontal
+            TemplateSize: =100
+            Visible: =CountRows(Filter(colFindingPhotos, FindingID = varPhotoFindingID)) > 0
+            X: =gblDevice.Padding
+            Y: =btnAddPhoto.Y + btnAddPhoto.Height + 10
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            Height: =110
+            
+            Template:
+                imgPhoto As image:
+                    Image: =ThisItem.Photo
+                    Width: =90
+                    Height: =90
+                    X: =5
+                    Y: =5
+    
+    FooterContainer As groupContainer:
+        Fill: =gblTheme.Light
+        Height: =gblDevice.FooterHeight
+        Width: =Parent.Width
+        X: =0
+        Y: =Parent.Height - Self.Height
+        
+        btnCancel As button:
+            Text: ="Cancel"
+            OnSelect: =Back()
+            Fill: =gblTheme.Border
+            Color: =gblTheme.Text
+            X: =gblDevice.Padding
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =100
+            Height: =50
+            
+        btnSave As button:
+            Text: ="Save Finding"
+            OnSelect: |+
+                If(IsBlank(txtDescription.Text) || IsBlank(drpCategory.Selected.Value) || IsBlank(drpSeverity.Selected.Value),
+                    Notify("Please complete all required fields", NotificationType.Warning),
+                    
+                    If(varEditMode,
+                        // Update existing finding
+                        Patch(colFindings, varCurrentFinding,
+                            {
+                                FindingCategory: drpCategory.Selected.Value,
+                                Severityoffiding: drpSeverity.Selected.Value,
+                                CorrectiveActionText: txtDescription.Text,
+                                Description: txtNotes.Text,
+                                FixedOnSite: chkFixedOnSite.Value
+                            }
+                        ),
+                        // Add new finding
+                        Collect(colFindings,
+                            {
+                                FindingCategory: drpCategory.Selected.Value,
+                                Severityoffiding: drpSeverity.Selected.Value,
+                                CorrectiveActionText: txtDescription.Text,
+                                Description: txtNotes.Text,
+                                FixedOnSite: chkFixedOnSite.Value,
+                                AppFindingID: If(!IsBlank(varPhotoFindingID), varPhotoFindingID, GUID()),
+                                AutoGenerated: false
+                            }
+                        )
+                    );
+                    
+                    Notify("Finding saved", NotificationType.Success);
+                    Back();
+                );
+            Fill: =gblTheme.Success
+            Color: =gblTheme.White
+            X: =Parent.Width - Self.Width - gblDevice.Padding
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =150
+            Height: =50
+            FontWeight: =FontWeight.Semibold
+

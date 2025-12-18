@@ -1,0 +1,96 @@
+Screen As screen.scrPhotoCapture:
+    Fill: =gblTheme.Dark
+    
+    HeaderContainer As groupContainer:
+        Fill: =gblTheme.Primary
+        Height: =gblDevice.HeaderHeight
+        Width: =Parent.Width
+        X: =0
+        Y: =0
+        
+        lblHeader As label:
+            Text: ="Capture Photo"
+            Color: =gblTheme.White
+            Size: =gblDevice.FontSize + 4
+            FontWeight: =FontWeight.Bold
+            X: =gblDevice.Padding
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            Height: =30
+    
+    MainContainer As groupContainer:
+        Fill: =gblTheme.Dark
+        Height: =Parent.Height - HeaderContainer.Height - FooterContainer.Height
+        Width: =Parent.Width
+        X: =0
+        Y: =HeaderContainer.Height
+        
+        camPhoto As camera:
+            Camera: =Camera.Back
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =Parent.Height
+            OnStream: |+
+                // Streaming camera feed
+            StreamRate: =100
+    
+    FooterContainer As groupContainer:
+        Fill: =RGBA(0, 0, 0, 0.8)
+        Height: =gblDevice.FooterHeight + 20
+        Width: =Parent.Width
+        X: =0
+        Y: =Parent.Height - Self.Height
+        
+        btnCancel As button:
+            Text: ="Cancel"
+            OnSelect: =Back()
+            Fill: =gblTheme.Border
+            Color: =gblTheme.Text
+            X: =gblDevice.Padding
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =100
+            Height: =50
+            
+        btnCapture As button:
+            Text: ="📷 Capture"
+            OnSelect: |+
+                If(varPhotoContext = "Finding",
+                    // Add photo to finding photos collection
+                    Collect(colFindingPhotos, {
+                        FindingID: varPhotoFindingID,
+                        Photo: camPhoto.Photo,
+                        Timestamp: Now()
+                    }),
+                    // Add photo to general site photos collection
+                    Collect(colGeneralPhotos, {
+                        Photo: camPhoto.Photo,
+                        Timestamp: Now()
+                    })
+                );
+                Notify("Photo captured", NotificationType.Success);
+                Back();
+            Fill: =gblTheme.Success
+            Color: =gblTheme.White
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =120
+            Height: =60
+            FontWeight: =FontWeight.Semibold
+            BorderRadius: =30
+            
+        btnFlip As button:
+            Text: ="🔄"
+            OnSelect: |+
+                If(camPhoto.Camera = Camera.Back,
+                    Set(camPhoto.Camera, Camera.Front),
+                    Set(camPhoto.Camera, Camera.Back)
+                );
+            Fill: =gblTheme.Secondary
+            Color: =gblTheme.White
+            X: =Parent.Width - Self.Width - gblDevice.Padding
+            Y: =(Parent.Height - Self.Height) / 2
+            Width: =50
+            Height: =50
+            BorderRadius: =25
+

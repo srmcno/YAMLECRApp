@@ -1,0 +1,64 @@
+Screen As screen:
+    Fill: =RGBA(245, 245, 245, 1)
+    LoadingSpinner: =LoadingSpinner.Controls
+    LoadingSpinnerColor: =RGBA(135, 100, 184, 1)
+    OnStart: |+
+        // Initialize Global Theme
+        Set(gblTheme, {
+            Primary: RGBA(0, 120, 212, 1),
+            Secondary: RGBA(0, 90, 158, 1),
+            Success: RGBA(16, 124, 16, 1),
+            Warning: RGBA(255, 185, 0, 1),
+            Danger: RGBA(232, 17, 35, 1),
+            Light: RGBA(243, 242, 241, 1),
+            Dark: RGBA(50, 49, 48, 1),
+            White: RGBA(255, 255, 255, 1),
+            Text: RGBA(50, 49, 48, 1),
+            Border: RGBA(225, 223, 221, 1)
+        });
+        
+        // Initialize Device Settings
+        Set(gblDevice, {
+            Width: App.Width,
+            Height: App.Height,
+            IsPhone: App.Width < 768,
+            IsTablet: App.Width >= 768 && App.Width < 1024,
+            IsDesktop: App.Width >= 1024,
+            Padding: If(App.Width < 768, 10, If(App.Width < 1024, 15, 20)),
+            FontSize: If(App.Width < 768, 12, If(App.Width < 1024, 14, 16)),
+            HeaderHeight: If(App.Width < 768, 50, 60),
+            FooterHeight: 80
+        });
+        
+        // Initialize Collections
+        Clear(colFindings);
+        Clear(colFindingPhotos);
+        Clear(colGeneralPhotos);
+        Clear(colInventories);
+        
+        // Initialize Audit Variables
+        Set(varCurrentStep, 1);
+        Set(varAuditScore, 100);
+        Set(varAuditDate, Now());
+        Set(varWeather, "");
+        Set(varLatitude, Location.Latitude);
+        Set(varLongitude, Location.Longitude);
+        Set(varSelectedFacility, Blank());
+        Set(varSelectedAuditType, "ECR");
+        Set(varAuditorName, User().FullName);
+        Set(varAuditorEmail, User().Email);
+        
+        // Initialize Finding Counters
+        Set(varMajorCount, 0);
+        Set(varMinorCount, 0);
+        Set(varObservationCount, 0);
+        
+        // Refresh Data Sources
+        Refresh('Facility Contact List');
+        Refresh('Chemical Products List');
+        Refresh('Audit Reports');
+        Refresh('ECR Corrective Actions');
+        
+        // Navigate to Setup Screen
+        Navigate(scrSetup, ScreenTransition.None);
+
