@@ -1,149 +1,25 @@
-Screen As screen.scrInventories:
+scrInventories As screen:
     Fill: =gblTheme.Light
-    
-    HeaderContainer As groupContainer:
-        Fill: =gblTheme.Primary
-        Height: =gblDevice.HeaderHeight
-        Width: =Parent.Width
-        X: =0
-        Y: =0
-        
-        lblHeader As label:
-            Text: ="Step 4: Chemical & Tank Inventories"
-            Color: =gblTheme.White
-            Size: =gblDevice.FontSize + 4
-            FontWeight: =FontWeight.Bold
-            X: =gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =30
-    
-    MainContainer As groupContainer:
-        Fill: =gblTheme.White
-        Height: =Parent.Height - HeaderContainer.Height - FooterContainer.Height - (gblDevice.Padding * 2)
-        Width: =Parent.Width - (gblDevice.Padding * 2)
-        X: =gblDevice.Padding
-        Y: =HeaderContainer.Height + gblDevice.Padding
-        
-        lblInstruction As label:
-            Text: ="Document all chemicals, wastes, and tanks on site. Track quantities, labeling, and compliance status."
-            Color: =gblTheme.Text
-            Size: =gblDevice.FontSize
-            X: =gblDevice.Padding
-            Y: =gblDevice.Padding
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =60
-            
-        btnAddInventory As button:
-            Text: ="+ Add Inventory Item"
-            OnSelect: |+
-                Set(varEditInventory, false);
-                Set(varCurrentInventory, Blank());
-                Navigate(scrInventoryDetail, ScreenTransition.Cover);
-            Fill: =gblTheme.Success
-            Color: =gblTheme.White
-            X: =gblDevice.Padding
-            Y: =lblInstruction.Y + lblInstruction.Height + 10
-            Width: =200
-            Height: =40
-            
-        galInventories As gallery:
-            Items: =colInventories
-            TemplateSize: =120
-            X: =gblDevice.Padding
-            Y: =btnAddInventory.Y + btnAddInventory.Height + 10
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =Parent.Height - btnAddInventory.Y - btnAddInventory.Height - 30
-            
-            Template:
-                rectBackground As rectangle:
-                    Fill: =If(ThisItem.MaterialStatus = "Hazardous", RGBA(232, 17, 35, 0.1), RGBA(243, 242, 241, 1))
-                    BorderColor: =gblTheme.Border
-                    BorderThickness: =1
-                    Width: =Parent.TemplateWidth - 20
-                    Height: =Parent.TemplateHeight - 10
-                    X: =10
-                    Y: =5
-                    
-                lblMaterialType As label:
-                    Text: =ThisItem.MaterialCategory & " - " & ThisItem.Title
-                    Color: =gblTheme.Text
-                    Size: =gblDevice.FontSize
-                    FontWeight: =FontWeight.Bold
-                    X: =rectBackground.X + 10
-                    Y: =rectBackground.Y + 5
-                    Width: =rectBackground.Width - 80
-                    
-                lblQuantity As label:
-                    Text: =Text(ThisItem.Quantity) & " " & ThisItem.QuantityUnit
-                    Color: =gblTheme.Text
-                    Size: =gblDevice.FontSize
-                    X: =rectBackground.X + 10
-                    Y: =lblMaterialType.Y + lblMaterialType.Height + 5
-                    Width: =rectBackground.Width - 20
-                    
-                lblCompliance As label:
-                    Text: ="Labeled: " & ThisItem.ProperlyLabeled & " | Storage: " & ThisItem.StorageCompliant & " | MSDS: " & ThisItem.MSDSAvailable
-                    Color: =gblTheme.Text
-                    Size: =gblDevice.FontSize - 2
-                    X: =rectBackground.X + 10
-                    Y: =lblQuantity.Y + lblQuantity.Height + 5
-                    Width: =rectBackground.Width - 20
-                    Height: =40
-                    
-                btnEditInventory As button:
-                    Text: ="Edit"
-                    OnSelect: |+
-                        Set(varEditInventory, true);
-                        Set(varCurrentInventory, ThisItem);
-                        Navigate(scrInventoryDetail, ScreenTransition.Cover);
-                    Fill: =gblTheme.Secondary
-                    Color: =gblTheme.White
-                    X: =rectBackground.X + rectBackground.Width - 65
-                    Y: =rectBackground.Y + 10
-                    Width: =55
-                    Height: =35
-                    
-                btnDeleteInventory As button:
-                    Text: ="×"
-                    OnSelect: |+
-                        Remove(colInventories, ThisItem);
-                    Fill: =gblTheme.Danger
-                    Color: =gblTheme.White
-                    X: =rectBackground.X + rectBackground.Width - 65
-                    Y: =btnEditInventory.Y + btnEditInventory.Height + 5
-                    Width: =55
-                    Height: =35
-    
-    FooterContainer As groupContainer:
-        Fill: =gblTheme.Light
-        Height: =gblDevice.FooterHeight
-        Width: =Parent.Width
-        X: =0
-        Y: =Parent.Height - Self.Height
-        
-        btnBack As button:
-            Text: ="Back"
-            OnSelect: |+
-                Set(varCurrentStep, 3);
-                Navigate(scrSystems, ScreenTransition.ScreenTransition.Fade);
-            Fill: =gblTheme.Border
-            Color: =gblTheme.Text
-            X: =gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =100
-            Height: =50
-            
-        btnNext As button:
-            Text: ="Next: Site Conditions"
-            OnSelect: |+
-                Set(varCurrentStep, 5);
-                Navigate(scrSiteConditions, ScreenTransition.ScreenTransition.Fade);
-            Fill: =gblTheme.Primary
-            Color: =gblTheme.White
-            X: =Parent.Width - Self.Width - gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =200
-            Height: =50
-            FontWeight: =FontWeight.Semibold
 
+    lblScreenTitle As label:
+        Align: =Align.Center
+        Color: =gblTheme.Primary
+        FontWeight: =FontWeight.Bold
+        Height: =50
+        Size: =20
+        Text: ="scrInventories"
+        Width: =Parent.Width
+        X: =0
+        Y: =20
+        ZIndex: =1
+
+    lblPlaceholder As label:
+        Align: =Align.Center
+        Color: =gblTheme.Text
+        Height: =100
+        Size: =14
+        Text: ="Screen content for scrInventories - Implement per requirements"
+        Width: =Parent.Width - 40
+        X: =20
+        Y: =100
+        ZIndex: =2

@@ -1,9 +1,9 @@
-Screen As screen:
+scrAppStart As screen:
     Fill: =RGBA(245, 245, 245, 1)
     LoadingSpinner: =LoadingSpinner.Controls
     LoadingSpinnerColor: =RGBA(135, 100, 184, 1)
-    OnStart: |+
-        // Initialize Global Theme
+    OnStart: |-
+        =// Initialize Global Theme
         Set(gblTheme, {
             Primary: RGBA(0, 120, 212, 1),
             Secondary: RGBA(0, 90, 158, 1),
@@ -60,5 +60,4 @@ Screen As screen:
         Refresh('ECR Corrective Actions');
         
         // Navigate to Setup Screen
-        Navigate(scrSetup, ScreenTransition.None);
-
+        Navigate(scrSetup, ScreenTransition.None)

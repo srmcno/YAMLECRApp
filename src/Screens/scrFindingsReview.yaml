@@ -1,206 +1,25 @@
-Screen As screen.scrFindingsReview:
+scrFindingsReview As screen:
     Fill: =gblTheme.Light
-    OnVisible: |+
-        // Calculate Audit Score
-        Set(varMajorCount, CountRows(Filter(colFindings, Severityoffiding = "Major")));
-        Set(varMinorCount, CountRows(Filter(colFindings, Severityoffiding = "Minor")));
-        Set(varObservationCount, CountRows(Filter(colFindings, Severityoffiding = "Observation")));
-        
-        // Score Calculation Logic: Start at 100, deduct based on severity
-        // Major Health/Environmental = 10 points
-        // Major Sovereignty = 5 points (assuming all majors are 10 for simplicity)
-        // Minor = 2 points
-        // Observations = 0 points
-        Set(varAuditScore, 
-            Max(0, 
-                100 - (varMajorCount * 10) - (varMinorCount * 2)
-            )
-        );
-    
-    HeaderContainer As groupContainer:
-        Fill: =gblTheme.Primary
-        Height: =gblDevice.HeaderHeight
-        Width: =Parent.Width
-        X: =0
-        Y: =0
-        
-        lblHeader As label:
-            Text: ="Findings Review & Submission"
-            Color: =gblTheme.White
-            Size: =gblDevice.FontSize + 4
-            FontWeight: =FontWeight.Bold
-            X: =gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =30
-    
-    MainContainer As groupContainer:
-        Fill: =gblTheme.White
-        Height: =Parent.Height - HeaderContainer.Height - FooterContainer.Height - (gblDevice.Padding * 2)
-        Width: =Parent.Width - (gblDevice.Padding * 2)
-        X: =gblDevice.Padding
-        Y: =HeaderContainer.Height + gblDevice.Padding
-        
-        // Score Display
-        rectScoreCard As rectangle:
-            Fill: =If(varAuditScore >= 90, RGBA(16, 124, 16, 0.2), If(varAuditScore >= 70, RGBA(255, 185, 0, 0.2), RGBA(232, 17, 35, 0.2)))
-            BorderColor: =If(varAuditScore >= 90, gblTheme.Success, If(varAuditScore >= 70, gblTheme.Warning, gblTheme.Danger))
-            BorderThickness: =2
-            Height: =120
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            X: =gblDevice.Padding
-            Y: =gblDevice.Padding
-            
-        lblScoreTitle As label:
-            Text: ="AUDIT SCORE"
-            Color: =gblTheme.Text
-            Size: =gblDevice.FontSize
-            FontWeight: =FontWeight.Semibold
-            X: =rectScoreCard.X + 15
-            Y: =rectScoreCard.Y + 10
-            Width: =rectScoreCard.Width - 30
-            
-        lblScore As label:
-            Text: =Text(varAuditScore)
-            Color: =If(varAuditScore >= 90, gblTheme.Success, If(varAuditScore >= 70, gblTheme.Warning, gblTheme.Danger))
-            Size: =48
-            FontWeight: =FontWeight.Bold
-            X: =rectScoreCard.X + 15
-            Y: =lblScoreTitle.Y + lblScoreTitle.Height + 5
-            Width: =rectScoreCard.Width - 30
-            
-        lblScoreBreakdown As label:
-            Text: ="Major: " & varMajorCount & " | Minor: " & varMinorCount & " | Observations: " & varObservationCount
-            Color: =gblTheme.Text
-            Size: =gblDevice.FontSize - 1
-            X: =rectScoreCard.X + 15
-            Y: =lblScore.Y + lblScore.Height + 5
-            Width: =rectScoreCard.Width - 30
-            
-        // Findings Gallery
-        lblFindingsHeader As label:
-            Text: ="All Findings (" & CountRows(colFindings) & "):"
-            Color: =gblTheme.Secondary
-            Size: =gblDevice.FontSize + 2
-            FontWeight: =FontWeight.Bold
-            X: =gblDevice.Padding
-            Y: =rectScoreCard.Y + rectScoreCard.Height + 15
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            
-        btnAddFinalFinding As button:
-            Text: ="+ Add Finding"
-            OnSelect: |+
-                Set(varEditMode, false);
-                Set(varCurrentFinding, Blank());
-                Navigate(scrFindingDetail, ScreenTransition.Cover);
-            Fill: =gblTheme.Success
-            Color: =gblTheme.White
-            X: =Parent.Width - 150 - gblDevice.Padding
-            Y: =lblFindingsHeader.Y
-            Width: =140
-            Height: =35
-            
-        galAllFindings As gallery:
-            Items: =colFindings
-            TemplateSize: =90
-            X: =gblDevice.Padding
-            Y: =lblFindingsHeader.Y + lblFindingsHeader.Height + 10
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =Parent.Height - lblFindingsHeader.Y - lblFindingsHeader.Height - 30
-            
-            Template:
-                rectFindingBg As rectangle:
-                    Fill: =If(ThisItem.Severityoffiding = "Major", RGBA(232, 17, 35, 0.1), If(ThisItem.Severityoffiding = "Minor", RGBA(255, 185, 0, 0.1), RGBA(0, 120, 212, 0.1)))
-                    BorderColor: =gblTheme.Border
-                    BorderThickness: =1
-                    Width: =Parent.TemplateWidth - 20
-                    Height: =Parent.TemplateHeight - 10
-                    X: =10
-                    Y: =5
-                    
-                lblFindingSeverity As label:
-                    Text: =ThisItem.Severityoffiding
-                    Color: =If(ThisItem.Severityoffiding = "Major", gblTheme.Danger, If(ThisItem.Severityoffiding = "Minor", gblTheme.Warning, gblTheme.Primary))
-                    Size: =gblDevice.FontSize - 2
-                    FontWeight: =FontWeight.Bold
-                    X: =rectFindingBg.X + 10
-                    Y: =rectFindingBg.Y + 5
-                    Width: =100
-                    
-                lblFindingCategory As label:
-                    Text: =ThisItem.FindingCategory
-                    Color: =gblTheme.Text
-                    Size: =gblDevice.FontSize - 2
-                    X: =lblFindingSeverity.X + lblFindingSeverity.Width + 10
-                    Y: =rectFindingBg.Y + 5
-                    Width: =150
-                    
-                lblFindingText As label:
-                    Text: =ThisItem.CorrectiveActionText
-                    Color: =gblTheme.Text
-                    Size: =gblDevice.FontSize
-                    X: =rectFindingBg.X + 10
-                    Y: =lblFindingSeverity.Y + lblFindingSeverity.Height + 5
-                    Width: =rectFindingBg.Width - 80
-                    Height: =50
-                    
-                btnEditFinding As button:
-                    Text: ="Edit"
-                    OnSelect: |+
-                        Set(varEditMode, true);
-                        Set(varCurrentFinding, ThisItem);
-                        Navigate(scrFindingDetail, ScreenTransition.Cover);
-                    Fill: =gblTheme.Secondary
-                    Color: =gblTheme.White
-                    X: =rectFindingBg.X + rectFindingBg.Width - 65
-                    Y: =rectFindingBg.Y + 10
-                    Width: =55
-                    Height: =30
-                    
-                btnDeleteFinding As button:
-                    Text: ="×"
-                    OnSelect: |+
-                        Remove(colFindings, ThisItem);
-                        // Recalculate score
-                        Set(varMajorCount, CountRows(Filter(colFindings, Severityoffiding = "Major")));
-                        Set(varMinorCount, CountRows(Filter(colFindings, Severityoffiding = "Minor")));
-                        Set(varObservationCount, CountRows(Filter(colFindings, Severityoffiding = "Observation")));
-                        Set(varAuditScore, Max(0, 100 - (varMajorCount * 10) - (varMinorCount * 2)));
-                    Fill: =gblTheme.Danger
-                    Color: =gblTheme.White
-                    X: =rectFindingBg.X + rectFindingBg.Width - 65
-                    Y: =btnEditFinding.Y + btnEditFinding.Height + 5
-                    Width: =55
-                    Height: =30
-    
-    FooterContainer As groupContainer:
-        Fill: =gblTheme.Light
-        Height: =gblDevice.FooterHeight
-        Width: =Parent.Width
-        X: =0
-        Y: =Parent.Height - Self.Height
-        
-        btnBack As button:
-            Text: ="Back"
-            OnSelect: |+
-                Set(varCurrentStep, 5);
-                Navigate(scrSiteConditions, ScreenTransition.ScreenTransition.Fade);
-            Fill: =gblTheme.Border
-            Color: =gblTheme.Text
-            X: =gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =100
-            Height: =50
-            
-        btnSubmit As button:
-            Text: ="Submit Audit"
-            OnSelect: |+
-                Navigate(scrSignature, ScreenTransition.Cover);
-            Fill: =gblTheme.Success
-            Color: =gblTheme.White
-            X: =Parent.Width - Self.Width - gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =150
-            Height: =50
-            FontWeight: =FontWeight.Semibold
 
+    lblScreenTitle As label:
+        Align: =Align.Center
+        Color: =gblTheme.Primary
+        FontWeight: =FontWeight.Bold
+        Height: =50
+        Size: =20
+        Text: ="scrFindingsReview"
+        Width: =Parent.Width
+        X: =0
+        Y: =20
+        ZIndex: =1
+
+    lblPlaceholder As label:
+        Align: =Align.Center
+        Color: =gblTheme.Text
+        Height: =100
+        Size: =14
+        Text: ="Screen content for scrFindingsReview - Implement per requirements"
+        Width: =Parent.Width - 40
+        X: =20
+        Y: =100
+        ZIndex: =2

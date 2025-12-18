@@ -1,219 +1,25 @@
-Screen As screen.scrInventoryDetail:
+scrInventoryDetail As screen:
     Fill: =gblTheme.Light
-    
-    HeaderContainer As groupContainer:
-        Fill: =gblTheme.Primary
-        Height: =gblDevice.HeaderHeight
-        Width: =Parent.Width
-        X: =0
-        Y: =0
-        
-        lblHeader As label:
-            Text: =If(varEditInventory, "Edit Inventory", "Add Inventory Item")
-            Color: =gblTheme.White
-            Size: =gblDevice.FontSize + 4
-            FontWeight: =FontWeight.Bold
-            X: =gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =30
-    
-    MainContainer As scrollableScreen:
-        Fill: =gblTheme.White
-        Height: =Parent.Height - HeaderContainer.Height - FooterContainer.Height - (gblDevice.Padding * 2)
-        Width: =Parent.Width - (gblDevice.Padding * 2)
-        X: =gblDevice.Padding
-        Y: =HeaderContainer.Height + gblDevice.Padding
-        
-        lblMaterialName As label:
-            Text: ="Material Name:"
-            Color: =gblTheme.Text
-            Size: =gblDevice.FontSize
-            X: =gblDevice.Padding
-            Y: =gblDevice.Padding
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            
-        txtMaterialName As text:
-            Default: =If(varEditInventory, varCurrentInventory.Title, "")
-            HintText: ="e.g., Used Motor Oil, Gasoline, Propane Tank"
-            X: =gblDevice.Padding
-            Y: =lblMaterialName.Y + lblMaterialName.Height + 5
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =40
-            
-        lblMaterialCategory As label:
-            Text: ="Material Category:"
-            Color: =gblTheme.Text
-            Size: =gblDevice.FontSize
-            X: =gblDevice.Padding
-            Y: =txtMaterialName.Y + txtMaterialName.Height + 15
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            
-        drpMaterialCategory As dropdown:
-            Items: =["Chemical", "Waste", "Tank", "FOG", "Hazardous Material", "Non-Hazardous Material"]
-            DefaultSelectedItems: =If(varEditInventory, varCurrentInventory.MaterialCategory, Blank())
-            X: =gblDevice.Padding
-            Y: =lblMaterialCategory.Y + lblMaterialCategory.Height + 5
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =40
-            
-        lblMaterialType As label:
-            Text: ="Material Type:"
-            Color: =gblTheme.Text
-            Size: =gblDevice.FontSize
-            X: =gblDevice.Padding
-            Y: =drpMaterialCategory.Y + drpMaterialCategory.Height + 15
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            
-        drpMaterialType As dropdown:
-            Items: =["FOG", "Used Oil", "Hazardous Waste", "Universal Waste", "Petroleum Product", "Cleaning Chemical", "Other"]
-            DefaultSelectedItems: =If(varEditInventory, varCurrentInventory.FindingCategory, Blank())
-            X: =gblDevice.Padding
-            Y: =lblMaterialType.Y + lblMaterialType.Height + 5
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =40
-            
-        lblQuantity As label:
-            Text: ="Quantity:"
-            Color: =gblTheme.Text
-            Size: =gblDevice.FontSize
-            X: =gblDevice.Padding
-            Y: =drpMaterialType.Y + drpMaterialType.Height + 15
-            Width: =(Parent.Width - (gblDevice.Padding * 3)) / 2
-            
-        txtQuantity As text:
-            Format: =TextFormat.Number
-            Default: =If(varEditInventory, Text(varCurrentInventory.Quantity), "")
-            HintText: ="Enter quantity"
-            X: =gblDevice.Padding
-            Y: =lblQuantity.Y + lblQuantity.Height + 5
-            Width: =(Parent.Width - (gblDevice.Padding * 3)) / 2
-            Height: =40
-            
-        lblQuantityUnit As label:
-            Text: ="Unit:"
-            Color: =gblTheme.Text
-            Size: =gblDevice.FontSize
-            X: =txtQuantity.X + txtQuantity.Width + gblDevice.Padding
-            Y: =drpMaterialType.Y + drpMaterialType.Height + 15
-            Width: =(Parent.Width - (gblDevice.Padding * 3)) / 2
-            
-        drpQuantityUnit As dropdown:
-            Items: =["Gallons", "Pounds", "Cubic Yards", "Each", "Liters", "Kilograms"]
-            DefaultSelectedItems: =If(varEditInventory, varCurrentInventory.QuantityUnit, "Each")
-            X: =txtQuantity.X + txtQuantity.Width + gblDevice.Padding
-            Y: =lblQuantityUnit.Y + lblQuantityUnit.Height + 5
-            Width: =(Parent.Width - (gblDevice.Padding * 3)) / 2
-            Height: =40
-            
-        lblMaterialStatus As label:
-            Text: ="Material Status:"
-            Color: =gblTheme.Text
-            Size: =gblDevice.FontSize
-            X: =gblDevice.Padding
-            Y: =txtQuantity.Y + txtQuantity.Height + 15
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            
-        drpMaterialStatus As dropdown:
-            Items: =["Hazardous", "Non-Hazardous"]
-            DefaultSelectedItems: =If(varEditInventory, varCurrentInventory.MaterialStatus, "Non-Hazardous")
-            X: =gblDevice.Padding
-            Y: =lblMaterialStatus.Y + lblMaterialStatus.Height + 5
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =40
-            
-        lblCompliance As label:
-            Text: ="Compliance Status:"
-            Color: =gblTheme.Secondary
-            Size: =gblDevice.FontSize + 1
-            FontWeight: =FontWeight.Semibold
-            X: =gblDevice.Padding
-            Y: =drpMaterialStatus.Y + drpMaterialStatus.Height + 20
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            
-        chkProperlyLabeled As checkbox:
-            Text: ="Properly Labeled"
-            Default: =If(varEditInventory, varCurrentInventory.ProperlyLabeled = "Yes", true)
-            X: =gblDevice.Padding
-            Y: =lblCompliance.Y + lblCompliance.Height + 10
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            
-        chkStorageCompliant As checkbox:
-            Text: ="Storage Compliant"
-            Default: =If(varEditInventory, varCurrentInventory.StorageCompliant = "Yes", true)
-            X: =gblDevice.Padding
-            Y: =chkProperlyLabeled.Y + chkProperlyLabeled.Height + 5
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            
-        chkMSDSAvailable As checkbox:
-            Text: ="MSDS/SDS Available"
-            Default: =If(varEditInventory, varCurrentInventory.MSDSAvailable = "Yes", true)
-            X: =gblDevice.Padding
-            Y: =chkStorageCompliant.Y + chkStorageCompliant.Height + 5
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-    
-    FooterContainer As groupContainer:
-        Fill: =gblTheme.Light
-        Height: =gblDevice.FooterHeight
-        Width: =Parent.Width
-        X: =0
-        Y: =Parent.Height - Self.Height
-        
-        btnCancel As button:
-            Text: ="Cancel"
-            OnSelect: =Back()
-            Fill: =gblTheme.Border
-            Color: =gblTheme.Text
-            X: =gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =100
-            Height: =50
-            
-        btnSave As button:
-            Text: ="Save Inventory"
-            OnSelect: |+
-                If(IsBlank(txtMaterialName.Text) || IsBlank(drpMaterialCategory.Selected.Value) || IsBlank(txtQuantity.Text),
-                    Notify("Please complete all required fields", NotificationType.Warning),
-                    
-                    If(varEditInventory,
-                        // Update existing inventory
-                        Patch(colInventories, varCurrentInventory,
-                            {
-                                Title: txtMaterialName.Text,
-                                MaterialCategory: drpMaterialCategory.Selected.Value,
-                                FindingCategory: drpMaterialType.Selected.Value,
-                                MaterialStatus: drpMaterialStatus.Selected.Value,
-                                Quantity: Value(txtQuantity.Text),
-                                QuantityUnit: drpQuantityUnit.Selected.Value,
-                                ProperlyLabeled: If(chkProperlyLabeled.Value, "Yes", "No"),
-                                StorageCompliant: If(chkStorageCompliant.Value, "Yes", "No"),
-                                MSDSAvailable: If(chkMSDSAvailable.Value, "Yes", "No")
-                            }
-                        ),
-                        // Add new inventory
-                        Collect(colInventories,
-                            {
-                                Title: txtMaterialName.Text,
-                                MaterialCategory: drpMaterialCategory.Selected.Value,
-                                FindingCategory: drpMaterialType.Selected.Value,
-                                MaterialStatus: drpMaterialStatus.Selected.Value,
-                                Quantity: Value(txtQuantity.Text),
-                                QuantityUnit: drpQuantityUnit.Selected.Value,
-                                ProperlyLabeled: If(chkProperlyLabeled.Value, "Yes", "No"),
-                                StorageCompliant: If(chkStorageCompliant.Value, "Yes", "No"),
-                                MSDSAvailable: If(chkMSDSAvailable.Value, "Yes", "No")
-                            }
-                        )
-                    );
-                    
-                    Notify("Inventory saved", NotificationType.Success);
-                    Back();
-                );
-            Fill: =gblTheme.Success
-            Color: =gblTheme.White
-            X: =Parent.Width - Self.Width - gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =170
-            Height: =50
-            FontWeight: =FontWeight.Semibold
 
+    lblScreenTitle As label:
+        Align: =Align.Center
+        Color: =gblTheme.Primary
+        FontWeight: =FontWeight.Bold
+        Height: =50
+        Size: =20
+        Text: ="scrInventoryDetail"
+        Width: =Parent.Width
+        X: =0
+        Y: =20
+        ZIndex: =1
+
+    lblPlaceholder As label:
+        Align: =Align.Center
+        Color: =gblTheme.Text
+        Height: =100
+        Size: =14
+        Text: ="Screen content for scrInventoryDetail - Implement per requirements"
+        Width: =Parent.Width - 40
+        X: =20
+        Y: =100
+        ZIndex: =2

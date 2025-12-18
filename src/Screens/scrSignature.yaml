@@ -1,88 +1,105 @@
-Screen As screen.scrSignature:
+scrSignature As screen:
     Fill: =gblTheme.Light
-    
-    HeaderContainer As groupContainer:
+
+    HeaderContainer As groupContainer.manualLayoutContainer:
         Fill: =gblTheme.Primary
         Height: =gblDevice.HeaderHeight
         Width: =Parent.Width
         X: =0
         Y: =0
-        
+        ZIndex: =1
+
         lblHeader As label:
-            Text: ="Auditor Signature"
+            Align: =Align.Center
             Color: =gblTheme.White
-            Size: =gblDevice.FontSize + 4
             FontWeight: =FontWeight.Bold
+            Height: =30
+            Size: =gblDevice.FontSize + 4
+            Text: ="Auditor Signature"
+            Width: =Parent.Width - (gblDevice.Padding * 2)
             X: =gblDevice.Padding
             Y: =(Parent.Height - Self.Height) / 2
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =30
-    
-    MainContainer As groupContainer:
+            ZIndex: =1
+
+    MainContainer As groupContainer.verticalAutoLayoutContainer:
+        DropShadow: =DropShadow.Light
         Fill: =gblTheme.White
         Height: =Parent.Height - HeaderContainer.Height - FooterContainer.Height - (gblDevice.Padding * 2)
+        LayoutDirection: =LayoutDirection.Vertical
+        LayoutGap: =15
         Width: =Parent.Width - (gblDevice.Padding * 2)
         X: =gblDevice.Padding
         Y: =HeaderContainer.Height + gblDevice.Padding
-        
+        ZIndex: =2
+
         lblInstruction As label:
-            Text: ="Please sign below to certify that this audit was conducted according to ECR standards."
             Color: =gblTheme.Text
+            Height: =60
             Size: =gblDevice.FontSize
+            Text: ="Please sign below to certify that this audit was conducted according to ECR standards."
+            Width: =Parent.Width - (gblDevice.Padding * 2)
             X: =gblDevice.Padding
             Y: =gblDevice.Padding
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =60
-            
+            ZIndex: =1
+
         penSignature As penInput:
-            X: =gblDevice.Padding
-            Y: =lblInstruction.Y + lblInstruction.Height + 10
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =200
             BorderColor: =gblTheme.Border
             BorderThickness: =2
-            
+            Height: =200
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            X: =gblDevice.Padding
+            Y: =lblInstruction.Y + lblInstruction.Height + 10
+            ZIndex: =2
+
         btnClearSignature As button:
-            Text: ="Clear Signature"
-            OnSelect: =Reset(penSignature)
-            Fill: =gblTheme.Border
             Color: =gblTheme.Text
+            Fill: =gblTheme.Border
+            Height: =40
+            OnSelect: =Reset(penSignature)
+            Text: ="Clear Signature"
+            Width: =150
             X: =gblDevice.Padding
             Y: =penSignature.Y + penSignature.Height + 10
-            Width: =150
-            Height: =40
-            
+            ZIndex: =3
+
         lblSubmitStatus As label:
-            Text: =varSubmitStatus
             Color: =If(varSubmitSuccess, gblTheme.Success, gblTheme.Danger)
+            Height: =60
             Size: =gblDevice.FontSize
+            Text: =varSubmitStatus
             Visible: =!IsBlank(varSubmitStatus)
+            Width: =Parent.Width - (gblDevice.Padding * 2)
             X: =gblDevice.Padding
             Y: =btnClearSignature.Y + btnClearSignature.Height + 20
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =60
-    
-    FooterContainer As groupContainer:
+            ZIndex: =4
+
+    FooterContainer As groupContainer.manualLayoutContainer:
         Fill: =gblTheme.Light
         Height: =gblDevice.FooterHeight
         Width: =Parent.Width
         X: =0
         Y: =Parent.Height - Self.Height
-        
+        ZIndex: =3
+
         btnCancel As button:
-            Text: ="Cancel"
-            OnSelect: =Back()
-            Fill: =gblTheme.Border
             Color: =gblTheme.Text
+            Fill: =gblTheme.Border
+            Height: =50
+            OnSelect: =Back()
+            Text: ="Cancel"
+            Width: =100
             X: =gblDevice.Padding
             Y: =(Parent.Height - Self.Height) / 2
-            Width: =100
-            Height: =50
-            
+            ZIndex: =1
+
         btnFinalSubmit As button:
-            Text: ="Submit Audit"
-            OnSelect: |+
-                // Validate signature
+            Color: =gblTheme.White
+            Disabled: =IsBlank(penSignature.Image)
+            Fill: =gblTheme.Success
+            FontWeight: =FontWeight.Semibold
+            Height: =50
+            OnSelect: |-
+                =// Validate signature
                 If(IsBlank(penSignature.Image),
                     Notify("Please provide your signature", NotificationType.Warning),
                     
@@ -170,7 +187,6 @@ Screen As screen.scrSignature:
                     Refresh('ECR Corrective Actions');
                     
                     // Step 5: Attach Finding Photos
-                    // Match photos to findings using AppFindingID
                     ForAll(colFindingPhotos,
                         With({
                             matchedFinding: LookUp('ECR Corrective Actions', AppFindingID = FindingID)
@@ -178,17 +194,14 @@ Screen As screen.scrSignature:
                             If(!IsBlank(matchedFinding),
                                 Patch('ECR Corrective Actions', matchedFinding,
                                     {
-                                        Attachments: Table({
-                                            Value: Photo
-                                        })
+                                        Attachments: Table({Value: Photo})
                                     }
                                 )
                             )
                         )
                     );
                     
-                    // Step 6: Attach Parent Attachments (Signature and General Photos)
-                    // Attach auditor signature
+                    // Step 6: Attach Parent Attachments
                     Patch('Audit Reports', varAuditRecord,
                         {
                             Attachments: Concatenate(
@@ -218,24 +231,11 @@ Screen As screen.scrSignature:
                     Set(varSubmitSuccess, true);
                     Notify("Audit submitted successfully! Score: " & varAuditScore, NotificationType.Success);
                     
-                    // Navigate to completion screen after delay
-                    Set(timerStart, true);
-                );
-            Fill: =gblTheme.Success
-            Color: =gblTheme.White
+                    // Navigate to completion screen
+                    Navigate(scrComplete, ScreenTransition.None)
+                )
+            Text: ="Submit Audit"
+            Width: =180
             X: =Parent.Width - Self.Width - gblDevice.Padding
             Y: =(Parent.Height - Self.Height) / 2
-            Width: =180
-            Height: =50
-            FontWeight: =FontWeight.Semibold
-            Disabled: =IsBlank(penSignature.Image)
-            
-    timerAutoNav As timer:
-        Duration: =3000
-        Repeat: =false
-        AutoStart: =timerStart
-        OnTimerEnd: |+
-            Set(timerStart, false);
-            Navigate(scrComplete, ScreenTransition.None);
-        Visible: =false
-
+            ZIndex: =2

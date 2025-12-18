@@ -1,128 +1,25 @@
-Screen As screen.scrPermits:
+scrPermits As screen:
     Fill: =gblTheme.Light
-    
-    HeaderContainer As groupContainer:
-        Fill: =gblTheme.Primary
-        Height: =gblDevice.HeaderHeight
-        Width: =Parent.Width
-        X: =0
-        Y: =0
-        
-        lblHeader As label:
-            Text: ="Step 2: Permits Review"
-            Color: =gblTheme.White
-            Size: =gblDevice.FontSize + 4
-            FontWeight: =FontWeight.Bold
-            X: =gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =30
-    
-    MainContainer As groupContainer:
-        Fill: =gblTheme.White
-        Height: =Parent.Height - HeaderContainer.Height - FooterContainer.Height - (gblDevice.Padding * 2)
-        Width: =Parent.Width - (gblDevice.Padding * 2)
-        X: =gblDevice.Padding
-        Y: =HeaderContainer.Height + gblDevice.Padding
-        
-        lblInstruction As label:
-            Text: ="Review existing permits and documentation for " & varSelectedFacility.Title & ". Add any findings below."
-            Color: =gblTheme.Text
-            Size: =gblDevice.FontSize
-            X: =gblDevice.Padding
-            Y: =gblDevice.Padding
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =60
-            
-        btnAddFinding As button:
-            Text: ="+ Add Permit Finding"
-            OnSelect: |+
-                Set(varEditMode, false);
-                Set(varCurrentFinding, Blank());
-                Navigate(scrFindingDetail, ScreenTransition.Cover);
-            Fill: =gblTheme.Success
-            Color: =gblTheme.White
-            X: =gblDevice.Padding
-            Y: =lblInstruction.Y + lblInstruction.Height + 10
-            Width: =200
-            Height: =40
-            
-        galFindings As gallery:
-            Items: =Filter(colFindings, FindingCategory = "Permits")
-            TemplateSize: =100
-            X: =gblDevice.Padding
-            Y: =btnAddFinding.Y + btnAddFinding.Height + 10
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            Height: =Parent.Height - btnAddFinding.Y - btnAddFinding.Height - 30
-            
-            Template:
-                rectBackground As rectangle:
-                    Fill: =If(ThisItem.Severityoffiding = "Major", RGBA(232, 17, 35, 0.1), If(ThisItem.Severityoffiding = "Minor", RGBA(255, 185, 0, 0.1), RGBA(0, 120, 212, 0.1)))
-                    Width: =Parent.TemplateWidth - 20
-                    Height: =Parent.TemplateHeight - 10
-                    X: =10
-                    Y: =5
-                    
-                lblSeverity As label:
-                    Text: =ThisItem.Severityoffiding
-                    Color: =If(ThisItem.Severityoffiding = "Major", gblTheme.Danger, If(ThisItem.Severityoffiding = "Minor", gblTheme.Warning, gblTheme.Primary))
-                    Size: =gblDevice.FontSize - 2
-                    FontWeight: =FontWeight.Bold
-                    X: =rectBackground.X + 10
-                    Y: =rectBackground.Y + 5
-                    Width: =100
-                    
-                lblDescription As label:
-                    Text: =ThisItem.CorrectiveActionText
-                    Color: =gblTheme.Text
-                    Size: =gblDevice.FontSize
-                    X: =rectBackground.X + 10
-                    Y: =lblSeverity.Y + lblSeverity.Height + 5
-                    Width: =rectBackground.Width - 80
-                    Height: =60
-                    
-                btnEdit As button:
-                    Text: ="Edit"
-                    OnSelect: |+
-                        Set(varEditMode, true);
-                        Set(varCurrentFinding, ThisItem);
-                        Navigate(scrFindingDetail, ScreenTransition.Cover);
-                    Fill: =gblTheme.Secondary
-                    Color: =gblTheme.White
-                    X: =rectBackground.X + rectBackground.Width - 65
-                    Y: =rectBackground.Y + 10
-                    Width: =55
-                    Height: =35
-    
-    FooterContainer As groupContainer:
-        Fill: =gblTheme.Light
-        Height: =gblDevice.FooterHeight
-        Width: =Parent.Width
-        X: =0
-        Y: =Parent.Height - Self.Height
-        
-        btnBack As button:
-            Text: ="Back"
-            OnSelect: |+
-                Set(varCurrentStep, 1);
-                Navigate(scrSetup, ScreenTransition.ScreenTransition.Fade);
-            Fill: =gblTheme.Border
-            Color: =gblTheme.Text
-            X: =gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =100
-            Height: =50
-            
-        btnNext As button:
-            Text: ="Next: Systems"
-            OnSelect: |+
-                Set(varCurrentStep, 3);
-                Navigate(scrSystems, ScreenTransition.ScreenTransition.Fade);
-            Fill: =gblTheme.Primary
-            Color: =gblTheme.White
-            X: =Parent.Width - Self.Width - gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
-            Width: =150
-            Height: =50
-            FontWeight: =FontWeight.Semibold
 
+    lblScreenTitle As label:
+        Align: =Align.Center
+        Color: =gblTheme.Primary
+        FontWeight: =FontWeight.Bold
+        Height: =50
+        Size: =20
+        Text: ="scrPermits"
+        Width: =Parent.Width
+        X: =0
+        Y: =20
+        ZIndex: =1
+
+    lblPlaceholder As label:
+        Align: =Align.Center
+        Color: =gblTheme.Text
+        Height: =100
+        Size: =14
+        Text: ="Screen content for scrPermits - Implement per requirements"
+        Width: =Parent.Width - 40
+        X: =20
+        Y: =100
+        ZIndex: =2
