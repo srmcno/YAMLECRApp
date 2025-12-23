@@ -1,15 +1,16 @@
-App As appinfo:
-    BackEnabled: =false
-    ConfirmExit: =false
-    ConfirmExitMessage: =""
-    DefaultConnectedDataSourceMaxGetRowsCount: =500
-    EnableAppEmbedding: =false
-    EnableDelayActions: =false
-    EnableDelayOutput: =true
-    EnableHeaderBarHiding: =false
-    EnablePowerAutomate: =true
-    LoadingSpinner: =LoadingSpinner.Controls
-    LoadingSpinnerColor: =RGBA(135, 100, 184, 1)
-    Name: ="ECR Data Collector"
-    ShowViewInMR: =true
-
+- App:
+    Control: appinfo@1.0.0
+    Properties:
+      BackEnabled: =false
+      ConfirmExit: =false
+      ConfirmExitMessage: =""
+      DefaultConnectedDataSourceMaxGetRowsCount: =500
+      EnableAppEmbedding: =false
+      EnableDelayActions: =false
+      EnableDelayOutput: =true
+      EnableHeaderBarHiding: =false
+      EnablePowerAutomate: =true
+      LoadingSpinner: =LoadingSpinner.Controls
+      LoadingSpinnerColor: =RGBA(135, 100, 184, 1)
+      Name: ="ECR Data Collector"
+      ShowViewInMR: =true

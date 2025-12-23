@@ -6,46 +6,81 @@ The YAML files in this repository use **Power Apps YAML format**, which is the o
 
 ### Key Characteristics
 
-1. **Control Declaration with Types**:
+1. **List-Based Control Declaration with Types and Versions**:
    ```yaml
-   ScreenName As screen:
-       Fill: =RGBA(255, 255, 255, 1)
-       
-       ButtonName As button:
-           Text: ="Click Me"
-           OnSelect: =Navigate(NextScreen)
-           ZIndex: =1
+   - ScreenName:
+       Control: Screen@1.0.0
+       Properties:
+         Fill: =RGBA(255, 255, 255, 1)
+       Children:
+         - ButtonName:
+             Control: Classic/Button@2.2.0
+             Properties:
+               Text: ="Click Me"
+               OnSelect: =Navigate(NextScreen)
+               ZIndex: =1
    ```
 
-2. **Formula Syntax** - Properties use `=` prefix for Power Apps formulas:
+2. **Control Format** - Each control uses the structure:
+   ```yaml
+   - ControlName:
+       Control: ControlType@Version
+       Variant: VariantName (optional)
+       Properties:
+         PropertyName: =value
+       Children:
+         - ChildControl:
+             ...
+   ```
+
+3. **Formula Syntax** - Properties use `=` prefix for Power Apps formulas:
    ```yaml
    Text: ="Hello World"
    Color: =gblTheme.Primary
    Visible: =varShowControl
    ```
 
-3. **Control Versions** - Each control specifies its type:
-   - `screen` - Screen control
-   - `label` - Label control
-   - `button` - Button control  
-   - `text` - Text input control
-   - `dropdown` - Dropdown control
-   - `gallery.galleryTemplate` - Gallery control
-   - `groupContainer.verticalAutoLayoutContainer` - Vertical container
-   - `groupContainer.manualLayoutContainer` - Manual layout container
-   - `penInput` - Pen/signature input
-   - `camera` - Camera control
+4. **Control Types with Versions**:
+   - `Screen@1.0.0` - Screen control
+   - `Label@2.5.1` - Label control
+   - `Classic/Button@2.2.0` - Button control  
+   - `Classic/TextInput@2.3.2` - Text input control
+   - `Classic/DropDown@2.3.2` - Dropdown control
+   - `Classic/ListBox@2.3.0` - ListBox control
+   - `Gallery@2.15.0` - Gallery control
+   - `GroupContainer@1.3.0` - Group container (with Variant for layout type)
+   - `PenInput@2.3.0` - Pen/signature input
+   - `Camera@2.3.0` - Camera control
 
-4. **Required Properties**:
+5. **Variants for Containers**:
+   - `ManualLayout` - Manual positioning
+   - `VerticalAutoLayoutContainer` - Vertical auto-layout
+   - `HorizontalAutoLayoutContainer` - Horizontal auto-layout
+   - `BrowseLayout_Vertical_OneTextVariant_ver5.0` - Gallery variant
+
+6. **Required Properties Section**:
    - `ZIndex` - Z-ordering of controls (layering)
    - `X`, `Y` - Position coordinates
    - `Width`, `Height` - Dimensions
 
-5. **Multi-line Formulas** use `|-` or `=` syntax:
+7. **Multi-line Formulas** use `|-` or `=` syntax:
    ```yaml
    OnSelect: |-
-       =Set(varTest, true);
-       Navigate(NextScreen)
+     =Set(varTest, true);
+     Navigate(NextScreen)
+   ```
+
+8. **Children Section** for nested controls:
+   ```yaml
+   Children:
+     - childControl1:
+         Control: Label@2.5.1
+         Properties:
+           Text: ="Child 1"
+     - childControl2:
+         Control: Label@2.5.1
+         Properties:
+           Text: ="Child 2"
    ```
 
 ### Processing These Files

@@ -1,8 +1,10 @@
-scrAppStart As screen:
-    Fill: =RGBA(245, 245, 245, 1)
-    LoadingSpinner: =LoadingSpinner.Controls
-    LoadingSpinnerColor: =RGBA(135, 100, 184, 1)
-    OnStart: |-
+- scrAppStart:
+    Control: Screen@1.0.0
+    Properties:
+      Fill: =RGBA(245, 245, 245, 1)
+      LoadingSpinner: =LoadingSpinner.Controls
+      LoadingSpinnerColor: =RGBA(135, 100, 184, 1)
+      OnStart: |-
         =// Initialize Global Theme
         Set(gblTheme, {
             Primary: RGBA(0, 120, 212, 1),

@@ -1,180 +1,217 @@
-scrSetup As screen:
-    Fill: =gblTheme.Light
-    OnVisible: |-
+- scrSetup:
+    Control: Screen@1.0.0
+    Properties:
+      Fill: =gblTheme.Light
+      OnVisible: |-
         =// Capture GPS Coordinates
         Set(varLatitude, Location.Latitude);
         Set(varLongitude, Location.Longitude)
-
-    HeaderContainer As groupContainer.verticalAutoLayoutContainer:
-        DropShadow: =DropShadow.Light
-        Fill: =gblTheme.Primary
-        Height: =gblDevice.HeaderHeight
-        LayoutDirection: =LayoutDirection.Vertical
-        Width: =Parent.Width
-        X: =0
-        Y: =0
-        ZIndex: =1
-
-        lblHeader As label:
-            Align: =Align.Center
-            Color: =gblTheme.White
-            FontWeight: =FontWeight.Bold
-            Height: =30
-            Size: =gblDevice.FontSize + 4
-            Text: ="ECR Data Collector - Setup"
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            X: =gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
-            ZIndex: =1
-
-    MainContainer As groupContainer.verticalAutoLayoutContainer:
-        DropShadow: =DropShadow.Light
-        Fill: =gblTheme.White
-        Height: =Parent.Height - HeaderContainer.Height - FooterContainer.Height - (gblDevice.Padding * 2)
-        LayoutDirection: =LayoutDirection.Vertical
-        LayoutGap: =10
-        Width: =Parent.Width - (gblDevice.Padding * 2)
-        X: =gblDevice.Padding
-        Y: =HeaderContainer.Height + gblDevice.Padding
-        ZIndex: =2
-
-        lblStep As label:
-            Color: =gblTheme.Secondary
-            FontWeight: =FontWeight.Semibold
-            Height: =30
-            Size: =gblDevice.FontSize + 2
-            Text: ="Step 1 of 5: Setup"
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            X: =gblDevice.Padding
-            Y: =gblDevice.Padding
-            ZIndex: =1
-
-        lblFacility As label:
-            Color: =gblTheme.Text
-            Height: =25
-            Size: =gblDevice.FontSize
-            Text: ="Select Facility:"
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            X: =gblDevice.Padding
-            Y: =lblStep.Y + lblStep.Height + 20
-            ZIndex: =2
-
-        drpFacility As dropdown:
-            DisplayFields: =["Title"]
-            Height: =40
-            Items: ='Facility Contact List'
-            OnChange: =Set(varSelectedFacility, Self.Selected)
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            X: =gblDevice.Padding
-            Y: =lblFacility.Y + lblFacility.Height + 5
-            ZIndex: =3
-
-        lblAuditType As label:
-            Color: =gblTheme.Text
-            Height: =25
-            Size: =gblDevice.FontSize
-            Text: ="Audit Type:"
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            X: =gblDevice.Padding
-            Y: =drpFacility.Y + drpFacility.Height + 15
-            ZIndex: =4
-
-        drpAuditType As dropdown:
-            Default: ="ECR"
-            Height: =40
-            Items: =["ECR", "SPCC", "SWPPP", "Housing ECR"]
-            OnChange: =Set(varSelectedAuditType, Self.Selected.Value)
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            X: =gblDevice.Padding
-            Y: =lblAuditType.Y + lblAuditType.Height + 5
-            ZIndex: =5
-
-        lblWeather As label:
-            Color: =gblTheme.Text
-            Height: =25
-            Size: =gblDevice.FontSize
-            Text: ="Weather Conditions:"
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            X: =gblDevice.Padding
-            Y: =drpAuditType.Y + drpAuditType.Height + 15
-            ZIndex: =6
-
-        txtWeather As text:
-            Default: =varWeather
-            Height: =40
-            HintText: ="e.g., Sunny, 75°F, Clear skies"
-            OnChange: =Set(varWeather, Self.Text)
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            X: =gblDevice.Padding
-            Y: =lblWeather.Y + lblWeather.Height + 5
-            ZIndex: =7
-
-        lblGPS As label:
-            Color: =gblTheme.Text
-            FontWeight: =FontWeight.Semibold
-            Height: =25
-            Size: =gblDevice.FontSize
-            Text: ="GPS Coordinates:"
-            Width: =Parent.Width - (gblDevice.Padding * 2)
-            X: =gblDevice.Padding
-            Y: =txtWeather.Y + txtWeather.Height + 15
-            ZIndex: =8
-
-        lblLatitude As label:
-            Color: =gblTheme.Text
-            Height: =25
-            Size: =gblDevice.FontSize
-            Text: ="Latitude: " & Text(varLatitude, "0.000000")
-            Width: =(Parent.Width - (gblDevice.Padding * 3)) / 2
-            X: =gblDevice.Padding
-            Y: =lblGPS.Y + lblGPS.Height + 5
-            ZIndex: =9
-
-        lblLongitude As label:
-            Color: =gblTheme.Text
-            Height: =25
-            Size: =gblDevice.FontSize
-            Text: ="Longitude: " & Text(varLongitude, "0.000000")
-            Width: =(Parent.Width - (gblDevice.Padding * 3)) / 2
-            X: =lblLatitude.X + lblLatitude.Width + gblDevice.Padding
-            Y: =lblGPS.Y + lblGPS.Height + 5
-            ZIndex: =10
-
-        btnRefreshGPS As button:
-            Color: =gblTheme.White
-            Fill: =gblTheme.Secondary
-            Height: =40
-            OnSelect: |-
-                =Set(varLatitude, Location.Latitude);
-                Set(varLongitude, Location.Longitude)
-            Text: ="Refresh GPS"
-            Width: =(Parent.Width - (gblDevice.Padding * 3)) / 2
-            X: =gblDevice.Padding
-            Y: =lblLatitude.Y + lblLatitude.Height + 10
-            ZIndex: =11
-
-    FooterContainer As groupContainer.manualLayoutContainer:
-        Fill: =gblTheme.Light
-        Height: =gblDevice.FooterHeight
-        Width: =Parent.Width
-        X: =0
-        Y: =Parent.Height - Self.Height
-        ZIndex: =3
-
-        btnNext As button:
-            Color: =gblTheme.White
+    Children:
+      - HeaderContainer:
+          Control: GroupContainer@1.3.0
+          Variant: VerticalAutoLayoutContainer
+          Properties:
+            DropShadow: =DropShadow.Light
             Fill: =gblTheme.Primary
-            FontWeight: =FontWeight.Semibold
-            Height: =50
-            OnSelect: |-
-                =If(
-                    IsBlank(varSelectedFacility) || IsBlank(varWeather),
-                    Notify("Please complete all required fields", NotificationType.Warning),
-                    Set(varCurrentStep, 2);
-                    Navigate(scrPermits, ScreenTransition.Fade)
-                )
-            Text: ="Next: Permits"
-            Width: =150
-            X: =Parent.Width - Self.Width - gblDevice.Padding
-            Y: =(Parent.Height - Self.Height) / 2
+            Height: =gblDevice.HeaderHeight
+            LayoutDirection: =LayoutDirection.Vertical
+            Width: =Parent.Width
+            X: =0
+            Y: =0
             ZIndex: =1
+          Children:
+            - lblHeader:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  Color: =gblTheme.White
+                  FontWeight: =FontWeight.Bold
+                  Height: =30
+                  Size: =gblDevice.FontSize + 4
+                  Text: ="ECR Data Collector - Setup"
+                  Width: =Parent.Width - (gblDevice.Padding * 2)
+                  X: =gblDevice.Padding
+                  Y: =(Parent.Height - Self.Height) / 2
+                  ZIndex: =1
+
+      - MainContainer:
+          Control: GroupContainer@1.3.0
+          Variant: VerticalAutoLayoutContainer
+          Properties:
+            DropShadow: =DropShadow.Light
+            Fill: =gblTheme.White
+            Height: =Parent.Height - HeaderContainer.Height - FooterContainer.Height - (gblDevice.Padding * 2)
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =10
+            Width: =Parent.Width - (gblDevice.Padding * 2)
+            X: =gblDevice.Padding
+            Y: =HeaderContainer.Height + gblDevice.Padding
+            ZIndex: =2
+          Children:
+            - lblStep:
+                Control: Label@2.5.1
+                Properties:
+                  Color: =gblTheme.Secondary
+                  FontWeight: =FontWeight.Semibold
+                  Height: =30
+                  Size: =gblDevice.FontSize + 2
+                  Text: ="Step 1 of 5: Setup"
+                  Width: =Parent.Width - (gblDevice.Padding * 2)
+                  X: =gblDevice.Padding
+                  Y: =gblDevice.Padding
+                  ZIndex: =1
+
+            - lblFacility:
+                Control: Label@2.5.1
+                Properties:
+                  Color: =gblTheme.Text
+                  Height: =25
+                  Size: =gblDevice.FontSize
+                  Text: ="Select Facility:"
+                  Width: =Parent.Width - (gblDevice.Padding * 2)
+                  X: =gblDevice.Padding
+                  Y: =lblStep.Y + lblStep.Height + 20
+                  ZIndex: =2
+
+            - drpFacility:
+                Control: Classic/DropDown@2.3.2
+                Properties:
+                  DisplayFields: '=["Title"]'
+                  Height: =40
+                  Items: ='Facility Contact List'
+                  OnChange: =Set(varSelectedFacility, Self.Selected)
+                  Width: =Parent.Width - (gblDevice.Padding * 2)
+                  X: =gblDevice.Padding
+                  Y: =lblFacility.Y + lblFacility.Height + 5
+                  ZIndex: =3
+
+            - lblAuditType:
+                Control: Label@2.5.1
+                Properties:
+                  Color: =gblTheme.Text
+                  Height: =25
+                  Size: =gblDevice.FontSize
+                  Text: ="Audit Type:"
+                  Width: =Parent.Width - (gblDevice.Padding * 2)
+                  X: =gblDevice.Padding
+                  Y: =drpFacility.Y + drpFacility.Height + 15
+                  ZIndex: =4
+
+            - drpAuditType:
+                Control: Classic/DropDown@2.3.2
+                Properties:
+                  Default: ="ECR"
+                  Height: =40
+                  Items: '=["ECR", "SPCC", "SWPPP", "Housing ECR"]'
+                  OnChange: =Set(varSelectedAuditType, Self.Selected.Value)
+                  Width: =Parent.Width - (gblDevice.Padding * 2)
+                  X: =gblDevice.Padding
+                  Y: =lblAuditType.Y + lblAuditType.Height + 5
+                  ZIndex: =5
+
+            - lblWeather:
+                Control: Label@2.5.1
+                Properties:
+                  Color: =gblTheme.Text
+                  Height: =25
+                  Size: =gblDevice.FontSize
+                  Text: ="Weather Conditions:"
+                  Width: =Parent.Width - (gblDevice.Padding * 2)
+                  X: =gblDevice.Padding
+                  Y: =drpAuditType.Y + drpAuditType.Height + 15
+                  ZIndex: =6
+
+            - txtWeather:
+                Control: Classic/TextInput@2.3.2
+                Properties:
+                  Default: =varWeather
+                  Height: =40
+                  HintText: ="e.g., Sunny, 75°F, Clear skies"
+                  OnChange: =Set(varWeather, Self.Text)
+                  Width: =Parent.Width - (gblDevice.Padding * 2)
+                  X: =gblDevice.Padding
+                  Y: =lblWeather.Y + lblWeather.Height + 5
+                  ZIndex: =7
+
+            - lblGPS:
+                Control: Label@2.5.1
+                Properties:
+                  Color: =gblTheme.Text
+                  FontWeight: =FontWeight.Semibold
+                  Height: =25
+                  Size: =gblDevice.FontSize
+                  Text: ="GPS Coordinates:"
+                  Width: =Parent.Width - (gblDevice.Padding * 2)
+                  X: =gblDevice.Padding
+                  Y: =txtWeather.Y + txtWeather.Height + 15
+                  ZIndex: =8
+
+            - lblLatitude:
+                Control: Label@2.5.1
+                Properties:
+                  Color: =gblTheme.Text
+                  Height: =25
+                  Size: =gblDevice.FontSize
+                  Text: ="Latitude: " & Text(varLatitude, "0.000000")
+                  Width: =(Parent.Width - (gblDevice.Padding * 3)) / 2
+                  X: =gblDevice.Padding
+                  Y: =lblGPS.Y + lblGPS.Height + 5
+                  ZIndex: =9
+
+            - lblLongitude:
+                Control: Label@2.5.1
+                Properties:
+                  Color: =gblTheme.Text
+                  Height: =25
+                  Size: =gblDevice.FontSize
+                  Text: ="Longitude: " & Text(varLongitude, "0.000000")
+                  Width: =(Parent.Width - (gblDevice.Padding * 3)) / 2
+                  X: =lblLatitude.X + lblLatitude.Width + gblDevice.Padding
+                  Y: =lblGPS.Y + lblGPS.Height + 5
+                  ZIndex: =10
+
+            - btnRefreshGPS:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  Color: =gblTheme.White
+                  Fill: =gblTheme.Secondary
+                  Height: =40
+                  OnSelect: |-
+                    =Set(varLatitude, Location.Latitude);
+                    Set(varLongitude, Location.Longitude)
+                  Text: ="Refresh GPS"
+                  Width: =(Parent.Width - (gblDevice.Padding * 3)) / 2
+                  X: =gblDevice.Padding
+                  Y: =lblLatitude.Y + lblLatitude.Height + 10
+                  ZIndex: =11
+
+      - FooterContainer:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            Fill: =gblTheme.Light
+            Height: =gblDevice.FooterHeight
+            Width: =Parent.Width
+            X: =0
+            Y: =Parent.Height - Self.Height
+            ZIndex: =3
+          Children:
+            - btnNext:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  Color: =gblTheme.White
+                  Fill: =gblTheme.Primary
+                  FontWeight: =FontWeight.Semibold
+                  Height: =50
+                  OnSelect: |-
+                    =If(
+                        IsBlank(varSelectedFacility) || IsBlank(varWeather),
+                        Notify("Please complete all required fields", NotificationType.Warning),
+                        Set(varCurrentStep, 2);
+                        Navigate(scrPermits, ScreenTransition.Fade)
+                    )
+                  Text: ="Next: Permits"
+                  Width: =150
+                  X: =Parent.Width - Self.Width - gblDevice.Padding
+                  Y: =(Parent.Height - Self.Height) / 2
+                  ZIndex: =1
